@@ -30,7 +30,7 @@ Nếu gán là NULL thì sẽ nằm ở trong phân vùng static
 Các trường hợp này đều là dành cho khai báo biến toàn cục
 ### 8.4.1. struct
 ●	Đối với struct thì khi khai báo struct thì các biên thành viên sẽ chưa được cấp phát địa chỉ 
-○	Đến khi mà khai báo những biến p1, p2, p3 thuộc kiểu của phân vùng nào thì các biến thành viên sẽ nằm trong phân vùng đó 
+    ○	Đến khi mà khai báo những biến p1, p2, p3 thuộc kiểu của phân vùng nào thì các biến thành viên sẽ nằm trong phân vùng đó 
 Phụ thuộc cách khởi tạo của những biến kiểu struct
 
 ```c
