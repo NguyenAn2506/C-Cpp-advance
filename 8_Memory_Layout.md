@@ -85,7 +85,8 @@ Các giá trị trong các ô nhớ được cấp phát là giá trị rác
 ```c
 ptr = (cast_type*)malloc(byte_size)
 ```
-**Trong đó :** 
+**Trong đó :**
+
 •	ptr là con trỏ lưu trữ ô nhớ đầu tiên của vùng nhớ được cấp phát
 •	cast_type* là kiểu con trỏ mà bạn muốn ép kiểu sang
 •	byte_size là kích thước theo byte bạn muốn cấp phát
