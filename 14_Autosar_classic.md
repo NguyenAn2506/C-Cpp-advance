@@ -33,6 +33,7 @@ Trong thực tế hay trong các hệ điều hành trên máy tính, vì sao ph
 -	SWC chỉ quan tâm đến logic (tính toán số học, khởi động thế nào), không cần quan tâm đến phần cứng. Tuy nhiên, SWC vẫn có thể giao tiếp với nhau và giao tiếp với phần cứng thông qua RTE.
 
 =>	Viết các thuật toán, logic ở lớp này
+
 ![Image-2](https://github.com/user-attachments/assets/127410fd-3158-4c18-ab5e-6000f0e4d907)
 ***
 ### 14.3.3. Runtime Environment (RTE)
