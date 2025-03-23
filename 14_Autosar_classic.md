@@ -4,6 +4,7 @@ Trong thực tế hay trong các hệ điều hành trên máy tính, vì sao ph
 
 => Vì khi chạy song song tại 1 thời điểm thì các tác vụ có thể cùng truy cập vào các khối phần cừng liên tục nếu không có hệ điều hành quản lý thì có thể các khối phần cứng ví dụ GPIO sẽ không biết nên ưu tiên cho task nào 
 => Thông qua hệ điều hành quản lý thì có thể chạy đa luồng tại các thời điểm khác nhau, autosar là 1 ví dụ về hệ điều hành này
+
 ![Image](https://github.com/user-attachments/assets/0e8a7431-1da2-4c49-81eb-96904f7fe81a)
 ***
 ## 14.1.  Khái niệm:
