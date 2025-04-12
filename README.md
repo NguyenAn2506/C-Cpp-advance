@@ -18,6 +18,11 @@ C-Cpp Advance/
 ├── Cpp Advance/
 │   ├── 15. Class
 │   ├── 16. OOP in Class
+│   ├── 17. Virtual Function (OOP Polymorphism Runtime)
+│   ├── 18. OOP Polymorphism CompileTime
+│   ├── 19. SOLID
+│   ├── 20. Template  
+│   ├── 21. Namespace  
 ├── Project/
 │   └── 
 ├── UML.md
