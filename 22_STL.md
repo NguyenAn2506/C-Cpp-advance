@@ -468,3 +468,639 @@ Kết quả
 ***
 ## Phần 2: Double Linked List
 ***
+### 2.1. Khái niệm
+***
+List là một container trong STL của C++, triển khai dưới dạng danh sách liên kết hai chiều.
+
+Một số đặc điểm quan trọng của list:
+- Truy cập tuần tự: Truy cập các phần tử của list chỉ có thể thực hiện tuần tự, không hỗ trợ truy cập ngẫu nhiên.
+- Hiệu suất chèn và xóa: Chèn và xóa ở bất kỳ vị trí nào trong danh sách có hiệu suất tốt hơn so với vector. Điều này đặc biệt đúng khi thêm/xóa ở giữa danh sách.
+
+![Image](https://github.com/user-attachments/assets/4389662f-d3e6-4aad-8269-6061a4b0f6ba)
+
+Single Linked List: duyệt 1 chiều (từ node đầu → node cuối)
+
+Doubly Linked List: 
+- duyệt xuôi: từ node đầu → node cuối: con trỏ next
+- duyệt ngược: từ node cuối → node đầu: con trỏ prev
+***
+### 2.2. Ứng dụng
+***
+Trong thực tế, khi viết thư viện thì người ta thường chọn danh sách liên két đôi hơn là danh sách liên kết đơn vì
+
+Ưu điểm: có thể duyệt ngược lẫn duyệt xuôi, linh hoạt hơn danh sách liên kết đơn
+***
+### 2.3. Một số method của list
+***
+Một số method của list:
+- push_back(): thêm node cuối list
+- push_front(): thêm node đầu list
+- insert(): thêm node vị trí bất kỳ
+- pop_back(): xóa node cuối list
+- pop_front(): xóa node đầu list
+- erase(): xóa node bất kỳ của list
+- size(): Trả về kích thước của list
+
+#### 2.3.1. Khai báo list
+***
+Khai báo ở list giống với khai báo vector, bao gồm
+- khai báo rỗng
+- khai báo chỉ định số lượng (=0)
+- khai báo chỉ định số lượng và giá trị
+- khai báo giá trị
+
+```cpp
+#include <iostream>
+#include <list>
+
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+    // list<int> lst = {1,3,5,7,8};       // node 0,1,2,3,4  // cách 1
+    // list<vector<int>> lst = {1,3,5,7,8};       // node 0,1,2,3,4
+    // list<int> lst1(5);       // cách 2
+    // list<int> lst2(5,2);     // cách 3
+
+    list<int> lst;
+}
+```
+
+Đối với cách khai báo danh sách rỗng thì để thêm vào thì phải sử dụng những method như push_back() và push_front() 
+
+```cpp
+    lst.push_back(1);       // node 0   0x01
+    lst.push_back(4);       // node 0   0x01
+    lst.push_back(3);       // node 0   0x01
+    lst.push_back(2);       // node 0   0x01
+    lst.push_back(15);       // node 0   0x01
+
+    lst.push_front(100);
+
+    lst.pop_back();
+    lst.pop_front();
+```
+
+#### 2.3.2. duyệt list
+***
+Đối với duyệt list thì giống với vector nhưng sẽ có các cách như sau:
+- Cách 1: là dùng for cải tiến (range base for loop)
+- Cách 2: là dùng iterator (bộ lặp)
+- Còn dùng vòng lặp for thông thường để duyệt qua từng node thì ở đây list không dùng được vì danh sách liên kết đôi có cơ chế duyệt xuôi duyệt ngược nên 1 vòng lặp for là không đáng kể
+
+##### Ví dụ 1: Duyệt list dùng for cải tiến (mặc định duyệt xuôi)
+```cpp
+int main(int argc, char const *argv[])
+{
+    list<int> lst = {1,3,5,7,8};       // node 0,1,2,3,4
+
+    lst.push_back(1);       // node 0   0x01
+    lst.push_back(4);       // node 1   0x12
+    lst.push_back(3);       // node 2   0x25
+    lst.push_back(2);       // node 3   0xaa
+    lst.push_back(15);       // node 4   0xb4
+
+    lst.push_front(100);
+
+    // Cách 1: for cải tiến
+    int i = 0;
+    for(auto item : lst)    // range base for loop
+    {
+        cout << "node: " << i++  << ", value: "<< item << endl;
+    }
+    return 0;
+}
+```
+ở đây thì item không phải là 1 vị trí nữa mà là giá trị của node tại đó, còn i thì tương ứng với giá tri của từng node được duyệt qua
+
+nên khi in ra thì mình in chính giá trị item đó 
+
+Kết quả
+```cpp
+node: 0, value: 100
+node: 1, value: 1
+node: 2, value: 3
+node: 3, value: 5
+node: 4, value: 7
+node: 5, value: 8
+node: 6, value: 1
+node: 7, value: 4
+node: 8, value: 3
+node: 9, value: 2
+node: 10, value: 15
+```
+##### Ví dụ 2: duyệt list dùng for iterator (duyệt xuôi)
+Cũng tương tự với vector thì ở list cũng có các hàm begin và end sử dụng cho iterator để tương ứng sử dụng cho list
+-	begin(): địa chỉ của node đầu tiên		// 0x01
+-	end(): địa chỉ sau node cuối cùng		// 0xa1
+
+đối với list thì hơi khác 1 chút 
+-	begin giống với vector
+-	nhưng mà end thì không đoán trước được vì các node không liền kề với nhau
+
+```cpp
+int main(int argc, char const *argv[])
+{
+    list<int> lst = {1,3,5,7,8};       // node 0,1,2,3,4
+    // list<int> lst;
+
+    // lst.resize(7);
+
+    lst.push_back(1);       // node 0   0x01
+    lst.push_back(4);       // node 0   0x01
+    lst.push_back(3);       // node 0   0x01
+    lst.push_back(2);       // node 0   0x01
+    lst.push_back(15);       // node 0   0x01
+
+    lst.push_front(100);
+
+    // Cách 1: for cải tiến
+    int i = 0;
+    for(auto item : lst)    // range base for loop
+    {
+        cout << "node: " << i++  << ", value: "<< item << endl;
+    }
+
+    cout<<endl;
+
+    // cách 2: for iterator
+    list<int>::iterator it;
+    for(it = lst.begin(); it != lst.end(); it++)
+    {
+        cout << *it << " ";
+    }
+
+    return 0;
+}
+```
+it++ như ở vector khi dùng iterator là it + 1 (1 * sizeof(int))
+
+còn ở list thì it++ bây h là trỏ đến địa chỉ của node tiếp theo (dùng con trỏ next để đọc giá trị địa chỉ của node tiếp theo)
+
+Kết quả
+```cpp
+node: 0, value: 100
+node: 1, value: 1
+node: 2, value: 3
+node: 3, value: 5
+node: 4, value: 7
+node: 5, value: 8
+node: 6, value: 1
+node: 7, value: 4
+node: 8, value: 3
+node: 9, value: 2
+node: 10, value: 15
+
+100 1 3 5 7 8 1 4 3 2 15
+```
+##### Ví dụ 3: duyệt list dùng for iterator (duyệt ngược)
+```cpp
+int main(int argc, char const *argv[])
+{
+    list<int> lst = {1,3,5,7,8};       // node 0,1,2,3,4
+    // list<int> lst;
+    // list<int> lst1(5);
+    // list<int> lst2(5,2);
+
+    // lst.resize(7);
+
+    lst.push_back(1);       // node 0   0x01
+    lst.push_back(4);       // node 0   0x01
+    lst.push_back(3);       // node 0   0x01
+    lst.push_back(2);       // node 0   0x01
+    lst.push_back(15);       // node 0   0x01
+
+    lst.push_front(100);
+
+    // Cách 1: for cải tiến
+    int i = 0;
+    for(auto item : lst)    // range base for loop
+    {
+        cout << "node: " << i++  << ", value: "<< item << endl;
+    }
+
+    cout<<endl;
+
+    // cách 2: for iterator  
+    cout << "duyet xuoi: ";
+    list<int>::iterator it;
+    // (duyệt xuôi)
+    for(it = lst.begin(); it != lst.end(); it++)
+    {
+        cout << *it << " ";
+    }
+
+    cout << endl;
+    // (duyệt ngược)
+    cout <<"duyet nguoc: ";
+
+    // for(it = lst.end(); it != lst.begin(); --it)
+    // { 
+    //     cout<< *it << " "; 
+    // } 
+    // => không hợp lệ (sai kết quả)
+
+    it = lst.end();
+    while (it != lst.begin())
+    {
+        --it;
+        cout<< *it << " ";
+    }
+    return 0;
+}
+```
+Kết quả
+```cpp
+node: 0, value: 100
+node: 1, value: 1
+node: 2, value: 3
+node: 3, value: 5
+node: 4, value: 7
+node: 5, value: 8
+node: 6, value: 1
+node: 7, value: 4
+node: 8, value: 3
+node: 9, value: 2
+node: 10, value: 15
+
+duyet xuoi: 100 1 3 5 7 8 1 4 3 2 15
+duyet nguoc: 15 2 3 4 1 8 7 5 3 1 100
+```
+
+##### Ví dụ 4: thêm hoặc xóa node bất kỳ insert() và erase()
+
+Đối với vector thì các phần tử sẽ xếp theo thứ tự liền kề còn list thì không nên không dùng +1 tức 1 * sizeof(<kiểu dữ liệu>) được
+
+Cũng dùng iterator
+```cpp
+int main(int argc, char const *argv[])
+{
+    list<int> lst = {1,3,5,7,8};       // node 0,1,2,3,4
+
+    lst.push_back(1);       // node 0   0x01
+    lst.push_back(4);       // node 0   0x01
+    lst.push_back(3);       // node 0   0x01
+    lst.push_back(2);       // node 0   0x01
+    lst.push_back(15);       // node 0   0x01
+
+    lst.push_front(100);
+
+    // cách 2: for iterator  
+    cout << "duyet xuoi: ";
+    list<int>::iterator it;
+    // (duyệt xuôi)
+    for(it = lst.begin(); it != lst.end(); it++)
+    {
+        cout << *it << " ";
+    }
+
+    cout << endl;
+
+    cout<< "Insert - Erase: ";
+    // list<int>::iterator it;
+    int i = 0;
+    for(it = lst.begin(); it != lst.end(); it++)
+    {
+        // Thêm node vào vị trí thứ 2
+        if(i == 2)
+        {
+            lst.insert(it, 765);
+        }
+
+        // xóa node ở vị trí thứ 4
+        if(i == 4)
+        {
+            it = lst.erase(it);   // cập nhật lại it để tiếp tục duyệt
+        }
+
+        i++;
+    }
+
+    for(it = lst.begin(); it != lst.end(); it++)
+    {
+        cout << *it << " ";
+    }
+    return 0;
+}
+```
+Kết quả
+```cpp
+duyet xuoi: 100 1 3 5 7 8 1 4 3 2 15 
+Insert - Erase: 100 1 765 3 5 7 8 1 4 3 2 15
+```
+***
+## Phần 3: Iterator
+***
+Iterator cung cấp một cách chung để duyệt qua các phần tử của một container mà không cần biết chi tiết về cách container được triển khai.
+
+it là một đối tượng của class Iterator và nó được lồng vào trong class list hoặc vector cho phép truy cập tuần tự qua các phần tử của một container.
+
+Nên những toán tử sử dụng như != hay == hay ++ hay dải tham chiếu nó sẽ không có mặc định cho it mà bên trong class phải được định nghĩa lại, mục đích sử dụng cho object it
+
+Nó giống như con trỏ (không phải con trỏ, nó chỉ chứa 1 con trỏ bên trong thôi), cho phép di chuyển qua các phần tử trong container.
+
+```cpp
+template <typename T>
+class list
+{
+    class iterator
+    {
+        private:
+            T *ptr;    // con trỏ thô (raw pointer)
+
+        public:
+           iterator operator ++ () const
+           {
+
+           }
+           iterator operator != () const
+           {
+
+           }
+           iterator operator * () 
+           {
+                return *ptr;
+           }
+           // ....
+    };
+};
+```
+***
+## Phần 4: MAP
+***
+### 4.1. Khái niệm:
+***
+Map là một container trong STL của C++, cung cấp một cấu trúc dữ liệu ánh xạ key-value (tương tự JSON).
+
+Mỗi phần tử trong std::map là một std::pair<const Key, T>:
+- Key là hằng số (không thể thay đổi sau khi thêm vào map). Khác với JSON là buộc là chuỗi
+- T là kiểu dữ liệu của giá trị (value).
+
+Map được phát triển dựa trên pair và template
+
+### 4.2. Đặc điểm chính
+***
+| Đặc điểm | Miêu tả |
+| --- | ---| 
+| **Sắp xếp theo key**	| Các phần tử được tự động sắp xếp theo thứ tự tăng dần theo key |
+| **Không cho phép trùng key**	| Mỗi key chỉ xuất hiện một lần duy nhất. |
+| **Key là hằng số** | Key không thể thay đổi sau khi được thêm vào map |
+
+### 4.3.	Khai báo key value cho map
+***
+Đối với JSON ở bên C thì  cặp key và value được đi kèm với nhau nhưng mặc định key phải ở dạng chuỗi 
+
+Còn ở C++ thì key là bất kỳ kiểu nào cx được
+
+**Cú pháp khai báo** 
+```cpp
+// cách 1
+Map< <kiểu dữ liệu cho key>, <kiểu dữ liệu cho value> > object_name;
+
+// cách 2
+Map< <kiểu dữ liệu cho key>, <kiểu dữ liệu cho value> > object_name =
+{
+    {“000”, 0},
+    {“001”, 5}
+};
+```
+#### Ví dụ 1: khai báo cách 1: dùng khi khai báo ban đầu là object rỗng
+khi object rỗng thì ta chèn phần tử vào object
+```cpp
+#include <iostream>
+#include <string>
+#include <map>
+
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+    map<string, int> m;  
+    m["001"] = 1;       // key-value 1
+    m["002"] = 2;       // key value 2
+    m["003"] = 3;       // key-value 3
+
+    return 0;
+}
+```
+#### Ví dụ 2: Khai báo cách 2
+```cpp
+int main(int argc, char const *argv[])
+{
+    map<string, int> m = 
+    {
+        {"000", 0},     // key-value 1
+        {"001", 5}      // key value 2
+    }; 
+    m["001"] = 1;       // key-value 2
+    m["002"] = 2;       // key value 3
+    m["003"] = 3;       // key-value 4
+
+    return 0;
+}
+```
+
+### 4.4.  Duyệt phần tử trong map
+***
+#### Cách 1: dùng range based for loop (for cải tiến)
+***
+ở trong vector thì item thì nó sẽ chứa toàn bộ dữ liệu, còn trong list thì nó sẽ chứa giá trị của toàn bộ node. Tương tự như vậy trong map thì khi mỗi lần duyệt qua thì nó cũng sẽ chứa toàn bộ cặp key – value của cặp đó luôn, 
+
+Để lấy ra từng phần thì thư viện đã cung cấp 2 thành phần là first và second
+
+##### Ví dụ 1: ghi đè phần tử + duyệt phần tử
+```cpp
+int main(int argc, char const *argv[])
+{
+    map<string, int> m = 
+    {
+        {"000", 0},     // key-value 1
+        {"001", 5}      // key value 2
+    }; 
+    m["001"] = 1;       // key-value 1
+    m["002"] = 2;       // key value 2
+    m["003"] = 3;       // key-value 3
+
+    // cách 1: range - based for loop
+    for(const auto& item: m)
+    {
+        cout << "key: " << item.first << " - value: " << item.second << endl;
+    }
+    return 0;
+}
+```
+
+Kết quả
+```cpp
+key: 000 - value: 0
+key: 001 - value: 1
+key: 002 - value: 2
+key: 003 - value: 3
+```
+
+Như kết quả ở trên thì thầy cặp key value của "001" chỉ xuất hiện 1 lần vì cú pháp (m["001"] = 1; ) đã ghi đè lên giá trị của phần tử "001" trước đó
+
+##### Ví dụ 2: thay đổi thứ tự khai báo của từng phần tử
+Giả sử khai báo key 005  001  004  003 thì như thế nào
+```cpp
+int main(int argc, char const *argv[])
+{
+    map<string, int> m = 
+    {
+        {"005", 0},     // key-value 1
+        {"001", 5}      // key value 2
+    }; 
+
+    m["001"] = 1;       // key-value 1
+    m["004"] = 2;       // key value 2
+    m["003"] = 3;       // key-value 3
+
+    // cách 1: range - based for loop
+    for(const auto& item: m)
+    {
+        cout << "key: " << item.first << " - value: " << item.second << endl;
+    }
+    return 0;
+}
+```
+Kết quả
+```cpp
+key: 001 - value: 1
+key: 003 - value: 3
+key: 004 - value: 2
+key: 005 - value: 0
+```
+
+Không in ra theo thứ tự cặp key – value được khai báo main
+
+Nó đã tự động sắp xếp lại các key value tương ứng với giá trị thứ tự tăng dần của key (nếu là chuỗi thì cũng vậy nó sẽ so sánh theo mã ASCII của từng kí tự)
+
+####  Cách 2: range based for loop 2 phần tử
+***
+Cách 1 là dùng 1 biến để lưu trữ key và value
+
+Cách này dùng 2 biến lưu trữ riêng biệt
+
+```cpp
+int main(int argc, char const *argv[])
+{
+    // map<string, int> m;     // key: string hoặc others (int, char,..), value: int
+
+    map<string, int> m = 
+    {
+        {"005", 0},     // key-value 1
+        {"001", 5}      // key value 2
+    }; 
+
+    m["001"] = 1;       // key-value 1
+    m["004"] = 2;       // key value 2
+    m["003"] = 3;       // key-value 3
+    
+    // cách 2: range - based for loop
+    for (const auto& [k,v] : m)     // k: key, v: value
+    {
+        cout << "key: " << k << " - value: " << v << endl;
+    }
+    return 0;
+}
+```
+Kết quả: dùng cách 1 hay 2 đều cho ra két quả giống nhau
+```cpp
+key: 001 - value: 1
+key: 003 - value: 3
+key: 004 - value: 2
+key: 005 - value: 0
+```
+#### Cách 3: Dùng lặp iterator
+***
+```cpp
+int main(int argc, char const *argv[])
+{
+    map<string, int> m = 
+    {
+        {"005", 0},     // key-value 1
+        {"001", 5}      // key value 2
+    }; 
+
+    m["001"] = 1;       // key-value 1
+    m["004"] = 2;       // key value 2
+    m["003"] = 3;       // key-value 3
+
+    // cách 3: iterator
+    map<string, int>::iterator it;      // khai báo object
+    for(it = m.begin(); it != m.end(); it++)
+    {
+        cout << "key: " << (*it).first << " - value: " << (*it).second << endl;
+    }
+
+    return 0;
+}
+```
+Kết quả: dùng cách 1,2 hay 3 đều cho ra két quả giống nhau
+```cpp
+key: 001 - value: 1
+key: 003 - value: 3
+key: 004 - value: 2
+key: 005 - value: 0
+```
+
+### 4.5. Các method trong MAP
+***
+![Image](https://github.com/user-attachments/assets/04207587-fb3b-49a8-8620-5505a9eb8631)
+
+#### 4.5.1. thêm hoặc xóa 1 cặp key - value vào map
+***
+Trong vector và list thì cung cấp các hàm như push và pop nhưng map thì không những vẫn còn insert và erase
+
+Khi dùng insert hay erase thì không cần phải truyền vào địa chỉ như list vì khi thêm vào thì map cx sắp xếp lại theo thứ tự của key
+
+Chỉ cần đảm bảo là key không trùng với cặp key value ở trước
+
+```cpp
+int main(int argc, char const *argv[])
+{
+    map<string, int> m = 
+    {
+        {"005", 0},     // key-value 1
+        {"001", 5}      // key value 2
+    }; 
+
+    m["001"] = 1;       // key-value 1
+    m["004"] = 2;       // key value 2
+    m["003"] = 3;       // key-value 3
+    m.at("003") = 10;
+
+    m.insert({"006", 12});
+    m.erase("001");
+
+
+    map<string, int>::iterator it;      // khai báo object
+    it = m.find("004");
+    if(it!= m.end())
+    {
+        (*it).second = 50;
+    }
+
+    // cách 3: iterator
+    // map<string, int>::iterator it;      // khai báo object
+    for(it = m.begin(); it != m.end(); it++)
+    {
+        cout << "key: " << (*it).first << " - value: " << (*it).second << endl;
+    }
+
+    return 0;
+}
+```
+Kết quả thêm 006 và xóa 001
+```cpp
+key: 003 - value: 10
+key: 004 - value: 50
+key: 005 - value: 0
+key: 006 - value: 12
+```
+
+### 4.6.	Ứng dụng của map
+***
+Map thường được dùng để lưu trữ dữ liệu vì nó hoạt động dưới key value
+
+Và nó cũng sẽ được dùng để sắp xếp, tìm kiếm dữ liệu (không cần dùng các thuật toán sort vì map đã tự sắp xếp, chỉ cần dùng thuật toán tìm kiếm)
