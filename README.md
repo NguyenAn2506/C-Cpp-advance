@@ -28,6 +28,8 @@ C-Cpp Advance/
 │   │   ├── 22-2. Double Linked List
 │   │   ├── 22-3. Iterator
 │   │   ├── 22-4. Map
+│   │   ├── 22-5. Lambda
+│   │   ├── 22-6. Algorithm
 ├── Project/
 │   └── 
 ├── UML.md
