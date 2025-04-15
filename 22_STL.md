@@ -1104,3 +1104,363 @@ key: 006 - value: 12
 Map thường được dùng để lưu trữ dữ liệu vì nó hoạt động dưới key value
 
 Và nó cũng sẽ được dùng để sắp xếp, tìm kiếm dữ liệu (không cần dùng các thuật toán sort vì map đã tự sắp xếp, chỉ cần dùng thuật toán tìm kiếm)
+
+***
+## Phần 5: Lambda
+***
+### 5.1. Khái niệm
+***
+- Lambda là 1 hàm nhưng sẽ thường được sử dụng 1 lần duy nhất trong chương trình (nhưng vẫn có thể tái sử dụng)
+- Là 1 hàm không có tên, vẫn có tham số, kiểu trả về,…
+- Lambda được định nghĩa tại chỗ khi khai báo (toàn cục hoặc cục bộ)
+- Cách sử dụng của nó
+
+### 5.2. Cú pháp
+***
+Cú pháp của lambda có 2 phiên bản
+Phiên bản 1:
+```cpp
+[capture] [parameter_list]  return_type
+{
+     // function body
+};
+```
+
+Phiên bản 2: trình biên dịch tự dự đoán kiểu trả về
+```cpp
+[capture] [parameter_list]
+{
+     // function body
+};
+```
+#### 5.2.1. return_type
+Lambda thì thường được sử dụng trong hàm cục bộ
+```cpp
+
+// // khai báo lambda - hàm toàn cục
+// []() -> void
+// {
+//     cout<< "Hello World\n";
+// };
+
+int main(int argc, char const *argv[])
+{
+    // khai báo lambda - hàm cục bộ
+    []() -> void
+    {
+        cout<< "Hello World\n";
+    };
+    return 0;
+}
+```
+=> chỉ khai báo chứ chưa sử dụng được
+
+#### 5.2.2. Cách sử dụng
+có 2 cách sử dụng:
+##### Cách 1: sử dụng toán tử ()
+- Để gọi ra ngay khi mình bảo, tức dấu ;
+- Cách này sử dụng khi muốn sử dụng 1 lần duy nhất
+
+Ví dụ:
+```cpp
+#include <iostream>
+
+using namespace std;
+
+// // khai báo lambda - hàm toàn cục
+// []() -> void
+// {
+//     cout<< "Hello World\n";
+// };
+
+int main(int argc, char const *argv[])
+{
+    // khai báo lambda - hàm cục bộ
+    []() -> void
+    {
+        cout<< "Hello World\n";
+    }();
+    return 0;
+}
+```
+Kết quả
+```cpp
+Hello World
+```
+##### Cách 2: lưu trữ trong 1 biến
+-	Tương tự với việc sử dụng 1 con trỏ hàm nhưng đơn giản hơn 
+-	Có thể sử dụng lại nhiều lần, nhưng chỉ trong phạm vi cho phép 
+
+Ví dụ:
+```cpp
+int main(int argc, char const *argv[])
+{
+    // khai báo lambda - hàm cục bộ
+    []() -> void
+    {
+        cout<< "1- Hello World 1\n";
+    }();
+
+    // cách 2
+    auto func = []()            
+    {
+        cout<< "2- Hello World 2\n";
+    };
+
+    func();
+
+    return 0;
+}
+```
+Hiện tại Chỉ sử dụng trong phạm vi main thôi, để ngoài main là lỗi
+
+Kết quả
+```cpp
+1- Hello World 1
+2- Hello World 2
+```
+#### 5.2.3. Thành phần parameter_list
+truyền tham số vào để sử dụng
+```cpp
+int main(int argc, char const *argv[])
+{
+    // khai báo lambda - hàm cục bộ
+    []() -> void
+    {
+        cout<< "1- Hello World 1\n";
+    }();
+
+    // cách 2
+    auto func = [](int x, double y)            
+    {
+        cout<< "2- Hello World 2\n";
+        cout << "x = " << x << "- y = " << y <<endl; 
+    };
+
+    func(2, 5.6);
+    func(3, 3.14);
+
+    return 0;
+}
+```
+Kết quả
+```cpp
+1- Hello World 1
+2- Hello World 2
+x = 2- y = 5.6
+2- Hello World 2
+x = 3- y = 3.14
+```
+#### 5.2.4. Thành phần capture
+Capture cho biết cách sử dụng các biến xung quanh lambda
+
+Khi khai báo a b c trong main thì đối với main thì a b c là biến cục bộ, nhưng còn đối với các hàm lambda thì a b c là biến toàn cục nhưng vẫn nằm trong phạm vi trong main.
+
+Tuy nhiên không phải muốn sử dụng là sử dụng. mà phải quy định cách sử dụng:
+-	Quy định giá trị của a b c   ví dụ như read only
+-	Thay đổi giá trị a b c trong lambda
+
+Có 1 số đặc điểm nhận dạng của capture như sau:
+| cú pháp capture | đặc điểm |
+| ---- | ---- |
+| **[]** | capture rỗng -> không được sử dụng bất kì biến nào xung quanh |
+| **[var]** | capture truyền giá trị -> chỉ sử dụng giá trị a, không thay đổi giá trị  (READ ONLY) |
+| **[&var]** |	capture tham chiếu -> tác động địa chỉ của biến để thay đổi giá trị hoặc là đọc giá trị |
+| **[&var1, var2] or others**	| var1: tham chiếu, var2: giá trị |
+| **[=]**	|truyền tất cả biến theo giá trị (read only cho all biến) |
+| **[&]**	| truyền tất cả biens theo địa chỉ (read - write) |
+
+Ví dụ 
+```cpp
+int main(int argc, char const *argv[])
+{
+    int a = 0;
+    int b = 1;
+    double c = 5.7;
+
+    // khai báo lambda - hàm cục bộ
+    [a, &b]() -> void
+    {
+        cout<< "1- Hello World 1\n";
+        
+        cout << "a = " <<a << endl;
+        b = 15;
+        cout << "b = " << b <<endl; 
+    }();
+    return 0;
+}
+```
+Kết quả
+```cpp
+1- Hello World 1
+a = 0
+b = 15
+```
+- Bây h đối với biến a là chỉ có Read only
+- Biến b là vừa đọc vừa ghi
+- Biến c là không sử dụng được trong lambda
+
+***
+## Phần 6: Algorithm
+***
+### 6.1. Khái niệm
+***
+Thư viện STL (Standard Template Library) cung cấp một số thuật toán tiêu biểu thông qua algorithm. Các thuật toán này hoạt động trên các phạm vi hoặc các loại dữ liệu khác nhau, giúp thực hiện các nhiệm vụ như sắp xếp (sort), tìm kiếm (find), chuyển đổi dữ liệu, count_if() , và nhiều thao tác khác. 
+
+#### 6.2. Các hàm thông dụng
+***
+##### 6.2.1. Hàm sort()
+###### a)	Ví dụ 1: Hàm sort() 2 tham số
+- Hàm sort nhận 2 tham số truyền vào là 1 địa chỉ
+- Mặc định là sắp xếp tăng dần
+
+Ví dụ
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+    vector<int> v = {1,3,5,7,9,2,0,6,8,4};
+
+    sort(v.begin(), v.end());       // mắc định sắp xếp theo tăng dần
+
+    for(const auto& item : v)
+    {
+        cout<< item <<" ";
+    }
+    return 0;
+}
+```
+Kết quả
+```cpp
+0 1 2 3 4 5 6 7 8 9
+```
+###### b)	Ví dụ 2: Hàm sort() 3 tham số
+- Nâng cấp của hàm sort 2 tham số và có thêm 1 tham số truyền vào khác là điều kiện
+- Có thể điều chỉnh tăng dần hoặc giảm dần tùy theo điều kiện
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+bool comp(int i, int j)
+{
+    return i>j;
+}
+
+int main(int argc, char const *argv[])
+{
+    vector<int> v = {1,3,5,7,9,2,0,6,8,4};
+
+    // sort(v.begin(), v.end());       // mắc định sắp xếp theo tăng dần
+    sort(v.begin(), v.end(), comp);       
+
+    for(const auto& item : v)
+    {
+        cout<< item <<" ";
+    }
+    return 0;
+}
+```
+Kết quả
+```cpp
+9 8 7 6 5 4 3 2 1 0
+```
+###### c)	Ví dụ 3: nâng cấp ví dụ 2
+Với ví dụ 2 thì hàm comp đó chỉ có sử dụng duy nhất cho hàm sort thôi, mà cũng đang dùng toàn cục nữa sinh ra phí RAM quá => nên ở đây ta có thể sử dụng 1 hàm lambda ở đây để thay thế cách viết như hàm toàn cục
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+    vector<int> v = {1,3,5,7,9,2,0,6,8,4};
+     
+    sort(v.begin(), v.end(), [](int i, int j)
+    {
+        return i > j;    // giảm dần , tăng dần thì < (ngược lại)
+    }); 
+
+    for(const auto& item : v)
+    {
+        cout<< item <<" ";
+    }
+    return 0;
+}
+```
+Kết quả
+```cpp
+9 8 7 6 5 4 3 2 1 0
+```
+#### 6.2.2.	Hàm count_if()
+
+Đếm số lượng dựa vào điều kiện nào đó
+
+Hàm này cũng giống với hàm sort(), 2 tham số đầu là địa chỉ bắt đầu và địa chỉ kết thúc, tham số thứ 3 là điều kiện
+
+Ví dụ:
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+    vector<int> v = {1,3,5,7,9,2,0,6,8,4};
+    
+    int count_even = 0;
+    int count_odd = 0;
+    vector<int> evens, odds;
+
+    count_if(v.begin(), v.end(), [&](int x)
+    {
+        if(x % 2 == 0)
+        {
+            count_even++;
+            evens.push_back(x);
+        }
+        else
+        {
+            count_odd++;
+            odds.push_back(x);
+        }
+        return false;
+    }); 
+
+    cout << "Number of evens: " << count_even << endl;
+    cout << "Number of odds: " << count_odd << endl;
+
+    for(const auto& item : evens)
+    {
+        cout<< item <<" ";
+    }
+    cout<<endl;
+    for(const auto& item : odds)
+    {
+        cout<< item <<" ";
+    }
+    return 0;
+
+```
+Kết quả
+```cpp
+Number of evens: 5
+Number of odds: 5
+2 0 6 8 4
+1 3 5 7 9
+```
+
+std::count_if() có nhiệm vụ duyệt từng phần tử của vector v.
+- Nó chỉ đếm những phần tử mà lambda trả về true.
+- Nhưng ở đây không cần dùng kết quả của count_if().
+- Chỉ muốn tận dụng việc nó duyệt qua các phần tử, nên trả về false để count_if() không đếm gì cả (vì  đã đếm thủ công bằng count_even và count_odd rồi).
+
+***
