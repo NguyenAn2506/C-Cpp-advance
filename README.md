@@ -30,15 +30,19 @@ C-Cpp Advance/
 │   │   ├── 22-4. Map
 │   │   ├── 22-5. Lambda
 │   │   ├── 22-6. Algorithm
-│   │   ├── 22-7 & 23. Funtor 
+│   │   └── 22-7 & 23. Funtor 
 │   ├── 24. Design Pattern
 │   │   ├── 24-1. Singleton Pattern
 │   │   ├── 24-2. Observer Pattern
 │   │   ├── 24-3. Decorator Pattern
 │   │   ├── 24-4. Factory Pattern
-│   │   ├── 24-5. MVP Pattern
+│   │   └── 24-5. MVP Pattern
 ├── Project/
-│   └── ECU Engine Current-Voltage Control
+│   ├── ECU Engine Current-Voltage Control
+│   ├── OOP - Hotel Managerment (incomplete)
+│   ├── ECU Design Pattern
+│   │   ├── Singleton Pattern
+│   │   ├── Observer Pattern
 ├── UML.md
 └── README.md
 ```
